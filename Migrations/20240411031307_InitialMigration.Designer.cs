@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BethanysPieShop.Migrations
 {
     [DbContext(typeof(BethanysPieShopDbContext))]
-    [Migration("20240321012933_InitialMigration")]
+    [Migration("20240411031307_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -87,7 +87,31 @@ namespace BethanysPieShop.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("pies");
+                    b.ToTable("Pies");
+                });
+
+            modelBuilder.Entity("BethanysPieShop.Models.ShoppingCartItem", b =>
+                {
+                    b.Property<int>("ShoppingCartItemId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ShoppingCartItemId"));
+
+                    b.Property<int>("Amount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PieId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ShoppingCartId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ShoppingCartItemId");
+
+                    b.HasIndex("PieId");
+
+                    b.ToTable("ShoppingCartItems");
                 });
 
             modelBuilder.Entity("BethanysPieShop.Models.Pie", b =>
@@ -99,6 +123,17 @@ namespace BethanysPieShop.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("BethanysPieShop.Models.ShoppingCartItem", b =>
+                {
+                    b.HasOne("BethanysPieShop.Models.Pie", "Pie")
+                        .WithMany()
+                        .HasForeignKey("PieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Pie");
                 });
 
             modelBuilder.Entity("BethanysPieShop.Models.Category", b =>

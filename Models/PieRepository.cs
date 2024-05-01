@@ -16,7 +16,7 @@ namespace BethanysPieShop.Models
         public IEnumerable<Pie> AllPies
         { get 
             {
-                return _bethanysPieShopDbContext.pies.Include(c => c.Category);
+                return _bethanysPieShopDbContext.Pies.Include(c => c.Category);
             } 
         }
 
@@ -24,13 +24,13 @@ namespace BethanysPieShop.Models
         {
             get 
             { 
-            return _bethanysPieShopDbContext.pies.Include(c=> c.Category).Where(p=>p.IsPieOfTheWeek);
+            return _bethanysPieShopDbContext.Pies.Include(c=> c.Category).Where(p=>p.IsPieOfTheWeek);
             }
         }
 
         public Pie? GetPieById(int PieId)
         {
-            return  _bethanysPieShopDbContext.pies.FirstOrDefault(p => p.PieId == PieId);
+            return  _bethanysPieShopDbContext.Pies.FirstOrDefault(p => p.PieId == PieId);
         }
 
         public IEnumerable<Pie> SearchPies(string searchQuery)

@@ -13,7 +13,7 @@
                 context.Categories.AddRange(Categories.Select(c => c.Value));
             }
 
-            if (!context.pies.Any())
+            if (!context.Pies.Any())
             {
                 context.AddRange
                 (

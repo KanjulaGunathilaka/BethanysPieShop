@@ -25,7 +25,7 @@ namespace BethanysPieShop.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "pies",
+                name: "Pies",
                 columns: table => new
                 {
                     PieId = table.Column<int>(type: "int", nullable: false)
@@ -43,26 +43,55 @@ namespace BethanysPieShop.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_pies", x => x.PieId);
+                    table.PrimaryKey("PK_Pies", x => x.PieId);
                     table.ForeignKey(
-                        name: "FK_pies_Categories_CategoryId",
+                        name: "FK_Pies_Categories_CategoryId",
                         column: x => x.CategoryId,
                         principalTable: "Categories",
                         principalColumn: "CategoryId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "ShoppingCartItems",
+                columns: table => new
+                {
+                    ShoppingCartItemId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PieId = table.Column<int>(type: "int", nullable: false),
+                    Amount = table.Column<int>(type: "int", nullable: false),
+                    ShoppingCartId = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ShoppingCartItems", x => x.ShoppingCartItemId);
+                    table.ForeignKey(
+                        name: "FK_ShoppingCartItems_Pies_PieId",
+                        column: x => x.PieId,
+                        principalTable: "Pies",
+                        principalColumn: "PieId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
-                name: "IX_pies_CategoryId",
-                table: "pies",
+                name: "IX_Pies_CategoryId",
+                table: "Pies",
                 column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShoppingCartItems_PieId",
+                table: "ShoppingCartItems",
+                column: "PieId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "pies");
+                name: "ShoppingCartItems");
+
+            migrationBuilder.DropTable(
+                name: "Pies");
 
             migrationBuilder.DropTable(
                 name: "Categories");
