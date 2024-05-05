@@ -6,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 //Services
 builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
 
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IPieRepository, PieRepository>();
@@ -35,6 +36,7 @@ if (app.Environment.IsDevelopment())
 app.UseSession();
 
 app.MapControllerRoute(name:"default", pattern:"{controller=Home}/{action=Index}/{id:int?}");
+app.MapRazorPages();
 
 //Call the DbInitializer
 DbInitializer.Seed(app);
