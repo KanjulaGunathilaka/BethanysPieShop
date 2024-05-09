@@ -1,11 +1,11 @@
 using BethanysPieShop.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileSystemGlobbing.Internal.Patterns;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 //Services
-builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
@@ -16,13 +16,19 @@ builder.Services.AddScoped<IShoppingCart, ShoppingCart>(sp => ShoppingCart.GetCa
 builder.Services.AddSession();
 builder.Services.AddHttpContextAccessor();
 
-//add framework services using, an extension method, DbContext extension method
-//It has as a type parameter BethanysPieShopDbcontext, so, register that one to be used as the DbContext for the application
+builder.Services.AddControllersWithViews()
+.AddJsonOptions(options =>
+ {
+     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+ });
+
 builder.Services.AddDbContext<BethanysPieShopDbContext>(options =>
 {
     options.UseSqlServer(
         builder.Configuration["ConnectionStrings:BethanysPieShopDbContextConnection"]);
 });
+
+builder.Services.AddControllers();
 
 var app = builder.Build();
 app.UseStaticFiles();
@@ -35,7 +41,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseSession();
 
-app.MapControllerRoute(name:"default", pattern:"{controller=Home}/{action=Index}/{id:int?}");
+app.MapDefaultControllerRoute();
+//app.MapControllerRoute(name:"default", pattern:"{controller=Home}/{action=Index}/{id:int?}");
 app.MapRazorPages();
 
 //Call the DbInitializer

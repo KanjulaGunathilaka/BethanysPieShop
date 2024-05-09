@@ -2,6 +2,7 @@
 using BethanysPieShop.ViewModels;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using System.IO.Pipelines;
 
 namespace BethanysPieShop.Controllers
 {
@@ -39,7 +40,7 @@ namespace BethanysPieShop.Controllers
                 pies = _pieRepository.AllPies.Where(p => p.Category.CategoryName == category).OrderBy(p => p.PieId);
                 currentCategory = _categoryRepository.AllCategories.FirstOrDefault(c => c.CategoryName == category)?.CategoryName;
             }
-            return View(new PieListViewModel(pies,currentCategory));
+            return View(new PieListViewModel(pies, currentCategory));
         }
 
         public IActionResult Details(int id)
@@ -52,6 +53,10 @@ namespace BethanysPieShop.Controllers
             }
 
             return View(pie);
+        }
+        public IActionResult Search()
+        {
+            return View();
         }
     }
 }
