@@ -2,11 +2,15 @@ using BethanysPieShop.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileSystemGlobbing.Internal.Patterns;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Identity;
+using BethanysPieShop.App;
 
 var builder = WebApplication.CreateBuilder(args);
+var connectionString = builder.Configuration.GetConnectionString("BethanysPieShopDbContextConnection") ?? throw new InvalidOperationException("Connection string 'BethanysPieShopDbContextConnection' not found.");
 
 //Services
 builder.Services.AddRazorPages();
+builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IPieRepository, PieRepository>();
@@ -28,22 +32,29 @@ builder.Services.AddDbContext<BethanysPieShopDbContext>(options =>
         builder.Configuration["ConnectionStrings:BethanysPieShopDbContextConnection"]);
 });
 
+builder.Services.AddDefaultIdentity<IdentityUser>().AddEntityFrameworkStores<BethanysPieShopDbContext>();
+
 builder.Services.AddControllers();
 
 var app = builder.Build();
-app.UseStaticFiles();
+
 
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
 }
 
-
+app.UseStaticFiles();
 app.UseSession();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapDefaultControllerRoute();
 //app.MapControllerRoute(name:"default", pattern:"{controller=Home}/{action=Index}/{id:int?}");
 app.MapRazorPages();
+
+
+app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
 
 //Call the DbInitializer
 DbInitializer.Seed(app);
